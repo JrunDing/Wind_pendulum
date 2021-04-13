@@ -32,12 +32,37 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "app_tle5012b.h"
+#include "Vofa.h"
+#include "fw.h"
+#include "motor.h"
+#include "dwt.h"
+#include "math.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+typedef struct {
+	uint8_t mode;
+	uint8_t angle;
+	uint8_t amp;
+}DataFrame;
+typedef struct {
+	uint16_t X;
+	uint16_t Y;
+}Angle;
+typedef struct {
+	float AX;
+	float AY;
+}Amp;
+typedef struct{
+	uint16_t p_x;
+	uint16_t p_y;
+}WavePointer;
+typedef struct{
+	float pwm;
+	uint8_t dir;
+}Motor;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

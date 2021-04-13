@@ -3,7 +3,6 @@
 #include "gpio.h"
 #include "tim.h"
 
-
 //哪一个 前后左右-1234    方向1 2    en 0-9999
 /*
 	1 ：	1推  0拉
@@ -12,7 +11,7 @@
 	4	：	1推	 0拉
 */
 void motor_ctl ( uint8_t which , uint8_t ph , uint16_t en)
-{
+{		
 		switch(which)
 		{
 				case 1:

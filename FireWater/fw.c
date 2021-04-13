@@ -1,12 +1,17 @@
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 #include "ringbuff.h"
 #include "serial_rx.h"
 #include "fw.h"
 #include "gpio.h"
 #include "Vofa.h"
 
+#define WaveSize 10000
+extern DataFrame command_data;//存储串口接收的命令
 extern 	Vofa_HandleTypedef jSHandle;  //JustFloat句柄
+extern Amp amp;//存储两个轴的幅度
+extern WavePointer pointer;//存储跟踪曲线的两个下标
 //以下变量是必要的
 //环形缓冲区
 RingBuff_t uart_ringbuff;		//定义一个fifo变量
@@ -40,6 +45,7 @@ void stop_cb(void *args,uint8_t len)
 	memset(buf,0,sizeof(buf)/sizeof(char));
 	memcpy(buf,args,sizeof(buf)/sizeof(char));
 	HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+	command_data.mode=4;
 	//Vofa_Printf(&jSHandle,"received data len =%d,test1_callback,float[0]=%f\r\n",len,buf[0]);
 }
  /***********************************************
@@ -68,6 +74,27 @@ void line_cb(void *args,uint8_t len)
 	float buf[4];
 	memset(buf,0,sizeof(buf)/sizeof(char));
 	memcpy(buf,args,sizeof(buf)/sizeof(char));
+	command_data.mode=1;
+	command_data.angle=(uint16_t)buf[0];
+	command_data.amp=(uint16_t)buf[1];
+	pointer.p_x=0;
+	pointer.p_y=0;//后续还可以根据实时位置动态调整开始跟踪点
+	amp.AY=command_data.amp*sin(command_data.angle);
+	amp.AX=amp.AY*(tan(command_data.angle)>0?tan(command_data.angle):-tan(command_data.angle));
+	uint8_t i =command_data.angle/90;//判断象限
+	switch(i){
+		case 0:
+			break;
+		case 1:
+			pointer.p_x=pointer.p_y+WaveSize/2;
+			break;
+		case 2:
+			break;
+		case 3:
+			pointer.p_x=pointer.p_y+WaveSize/2;
+			break;
+	}
+
 	//Vofa_Printf(&jSHandle,"received data len =%d,test3_callback,float[0]=%f,float[1]=%f,float[2]=%f\r\n",len,buf[0],buf[1],buf[2]);
 }
 void circle_cb(void *args,uint8_t len)
@@ -75,13 +102,19 @@ void circle_cb(void *args,uint8_t len)
 	float buf[4];
 	memset(buf,0,sizeof(buf)/sizeof(char));
 	memcpy(buf,args,sizeof(buf)/sizeof(char));
+	command_data.mode=3;
+	command_data.angle=(uint16_t)buf[0];
+	command_data.amp=(uint16_t)buf[1];
+	pointer.p_x=0;
+	pointer.p_y=WaveSize/4;//pi/2相位超前
 	//Vofa_Printf(&jSHandle,"received data len =%d,test4_callback,float[0]=%f,float[1]=%f,float[2]=%f,float[3]=%f\r\n",len,buf[0],buf[1],buf[2],buf[3]);
 }
-void xxx_cb(void *args,uint8_t len)
+void to_mid_cb(void *args,uint8_t len)
 {
 	float buf[4];
 	memset(buf,0,sizeof(buf)/sizeof(char));
 	memcpy(buf,args,sizeof(buf)/sizeof(char));
+	command_data.mode=2;
 	//Vofa_Printf(&jSHandle,"received data len =%d,xxx_callback,float[0]=%f,float[1]=%f,float[2]=%f,float[3]=%f\r\n",len,buf[0],buf[1],buf[2],buf[3]);
 }
 void cmd123_cb(void *args,uint8_t len)
@@ -105,7 +138,7 @@ fw_pare_t fw_cb[]={
 	{"extend",extend_cb},
 	{"line",line_cb},
 	{"circle",circle_cb},
-	{"xxx",xxx_cb},
+	{"to_mid",to_mid_cb},
 	{"123",cmd123_cb},
 	{"SETKP",setkp_cb},
 };

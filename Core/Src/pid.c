@@ -1,19 +1,56 @@
 #include "pid.h"
 
-
-PID_parameter PID;
-
+extern Motor motor[4];
+PID_parameter PID1_X;//用于追踪轨迹
+PID_parameter PID1_Y;
+PID_parameter PID2_X;//用于快速恢复中点
+PID_parameter PID2_Y;
 
 //位置式PID
-float Position_Pid(float Current,float Target)
+float Position_Pid(PID_parameter* PID,float Current,float Target)
 {
-    PID.Sv=Target;
-    PID.Pv=Current;
-    PID.Bias=PID.Sv-PID.Pv;
-    PID.Bias_sum+=PID.Bias;
-    PID.Output=PID.Kp*PID.Bias+PID.Ki*PID.Bias_sum+PID.Kd*(PID.Bias-PID.Last_bias);
-    PID.Last_bias=PID.Bias;
-    return PID.Output;
+    PID->Sv=Target;
+    PID->Pv=Current;
+    PID->Bias=PID->Sv-PID->Pv;
+    PID->Bias_sum+=PID->Bias;
+    PID->Output=PID->Kp*PID->Bias+PID->Ki*PID->Bias_sum+PID->Kd*(PID->Bias-PID->Last_bias);
+    PID->Last_bias=PID->Bias;
+    return PID->Output;
+}
+void Cap(PID_parameter* PID_X,PID_parameter* PID_Y){
+	if(PID_X->Output>PID_X->Output_max){
+		motor[1].pwm=PID_X->Output_max;
+		motor[3].pwm=PID_X->Output_max;
+	}
+	else{
+		motor[1].pwm=PID_X->Output;
+		motor[3].pwm=PID_X->Output;
+	}
+	if(PID_Y->Output>PID_Y->Output_max){
+		motor[0].pwm=PID_Y->Output_max;
+		motor[2].pwm=PID_Y->Output_max;
+	}
+	else{
+		motor[0].pwm=PID_Y->Output;
+		motor[2].pwm=PID_Y->Output;
+	}
+}
+void Execute(void){
+	for(uint8_t i =0;i<4;i++){
+		if(motor[i].pwm>=0){
+			motor[i].dir=1;
+			motor_ctl(i+1,motor[i].dir,(uint16_t)motor[i].pwm);
+		}
+		else{
+			motor[i].dir=0;
+			motor_ctl(i+1,motor[i].dir,(uint16_t)-motor[i].pwm);
+		}
+	}
+}
+void AntiWindup(PID_parameter* PID){
+	if(PID->Intergral > PID->Intergral_max){
+		PID->Intergral = PID->Intergral_max;
+	}
 }
 
 

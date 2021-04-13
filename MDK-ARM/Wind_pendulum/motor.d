@@ -39,4 +39,9 @@ wind_pendulum/motor.o: ..\Core\Src\motor.c \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_tim_ex.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart_ex.h \
-  ..\Core\Inc\tim.h
+  ..\Core\Inc\app_tle5012b.h ..\Core\Inc\spi.h \
+  D:\Software\Keil\Packs\Freedom\VofaPlus\1.0.0\Vofa+\VOFA+\Vofa.h \
+  D:\Software\Keil\ARM\ARMCLANG\Bin\..\include\stdbool.h \
+  ..\FireWater\fw.h ..\FireWater\serial_rx.h ..\FireWater\def.h \
+  ..\Drivers\CMSIS\Device\ST\STM32H7xx\Include\stm32h750xx.h \
+  ..\Core\Inc\motor.h ..\DWT\dwt.h ..\Core\Inc\tim.h

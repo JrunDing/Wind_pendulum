@@ -3,6 +3,7 @@
 "wind_pendulum\app_tle5012b.o"
 "wind_pendulum\pid.o"
 "wind_pendulum\motor.o"
+"wind_pendulum\mycommon.o"
 "wind_pendulum\main.o"
 "wind_pendulum\gpio.o"
 "wind_pendulum\spi.o"
@@ -10,7 +11,6 @@
 "wind_pendulum\usart.o"
 "wind_pendulum\stm32h7xx_it.o"
 "wind_pendulum\stm32h7xx_hal_msp.o"
-"wind_pendulum\mycommon.o"
 "wind_pendulum\stm32h7xx_hal_cortex.o"
 "wind_pendulum\stm32h7xx_hal_rcc.o"
 "wind_pendulum\stm32h7xx_hal_rcc_ex.o"
@@ -37,6 +37,7 @@
 "wind_pendulum\fw.o"
 "..\FireWater\FW_LIB.lib"
 "wind_pendulum\js.o"
+"wind_pendulum\dwt.o"
 "wind_pendulum\vofa.o"
 --strict --scatter "Wind_pendulum\Wind_pendulum.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
