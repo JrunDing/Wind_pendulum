@@ -25,10 +25,10 @@
 #include "gpio.h"
 #include "app_tle5012b.h"
 #include "pid.h"
-#define IndexInc 4//根据固有频率来
-#define WaveSize 10000
-#define K_amp 1.0//计算实际幅值的比例
-#define K_ff 0.0//前馈项比例
+#define IndexInc 1//根据固有频率来
+#define WaveSize 1500
+#define K_amp 1.06//计算实际幅值的比例
+float K_ff=1;//前馈项比例
 
 
 extern Angle angle;//X和Y轴角度
@@ -41,7 +41,7 @@ extern DataFrame command_data;//存储串口接收的命令
 extern WavePointer pointer;//存储跟踪曲线的两个下标
 extern Motor motor[4];//存储电机状态
 extern Amp amp;//存储两个轴的幅度
-extern float sin_wave[10000];
+extern float sin_wave[1500];
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim2;
@@ -118,9 +118,9 @@ void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 99;
+  htim3.Init.Prescaler = 199;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 999;
+  htim3.Init.Period = 1099;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -250,6 +250,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 		if(htim == &htim3)
 		{
+			
 			angle.X=ReadAngle();
 			angle.Y=ReadAngle_Y();
 			//angle.Y-=angle.Mid_Y;

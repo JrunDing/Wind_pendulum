@@ -7,10 +7,11 @@
 #include "gpio.h"
 #include "Vofa.h"
 #include "main.h"
-#define WaveSize 10000
+#define WaveSize 1500
 extern DataFrame command_data;//存储串口接收的命令
 extern 	Vofa_HandleTypedef jSHandle;  //JustFloat句柄
 extern Amp amp;//存储两个轴的幅度
+extern float K_ff;
 extern WavePointer pointer;//存储跟踪曲线的两个下标
 extern PID_parameter PID1_X;//用于追踪轨迹
 extern PID_parameter PID1_Y;
@@ -144,6 +145,7 @@ void cmd123_cb(void *args,uint8_t len)
 	float buf[4];
 	memset(buf,0,sizeof(buf)/sizeof(char));
 	memcpy(buf,args,sizeof(buf)/sizeof(char));
+	motor_ctl((int)buf[0],(int)buf[1],(int)buf[2]);
 	//Vofa_Printf(&jSHandle,"received data len =%d,cmd123_callback,float[0]=%f,float[1]=%f,float[2]=%f,float[3]=%f\r\n",len,buf[0],buf[1],buf[2],buf[3]);
 }
 void setkp_cb(void *args,uint8_t len)
@@ -151,6 +153,9 @@ void setkp_cb(void *args,uint8_t len)
 	float buf[4];
 	memset(buf,0,sizeof(buf)/sizeof(char));
 	memcpy(buf,args,sizeof(buf)/sizeof(char));
+	PID1_X.Kp=buf[0];
+	K_ff=buf[1];
+	PID1_X.Kd=buf[2];
 	//Vofa_Printf(&jSHandle,"received data len =%d,setkp_cb_callback,kp=%f\r\n",len,buf[0]);
 }
 //烈酒协议字符命令及回调函数
@@ -161,7 +166,7 @@ fw_pare_t fw_cb[]={
 	{"line",line_cb},
 	{"circle",circle_cb},
 	{"to_mid",to_mid_cb},
-	{"123",cmd123_cb},
+	{"motor",cmd123_cb},
 	{"SETKP",setkp_cb},
 };
 
