@@ -43,4 +43,4 @@ wind_pendulum/pid.o: ..\Core\Src\pid.c ..\Core\Inc\pid.h \
   D:\Software\Keil\ARM\ARMCLANG\Bin\..\include\stdbool.h \
   ..\FireWater\fw.h ..\FireWater\serial_rx.h ..\FireWater\def.h \
   ..\Drivers\CMSIS\Device\ST\STM32H7xx\Include\stm32h750xx.h \
-  ..\Core\Inc\motor.h ..\DWT\dwt.h
+  ..\Core\Inc\motor.h ..\DWT\dwt.h ..\Core\Inc\pid.h

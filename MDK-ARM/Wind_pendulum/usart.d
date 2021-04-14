@@ -43,6 +43,6 @@ wind_pendulum/usart.o: ..\Core\Src\usart.c ..\Core\Inc\usart.h \
   D:\Software\Keil\ARM\ARMCLANG\Bin\..\include\stdbool.h \
   ..\FireWater\fw.h ..\FireWater\serial_rx.h ..\FireWater\def.h \
   ..\Drivers\CMSIS\Device\ST\STM32H7xx\Include\stm32h750xx.h \
-  ..\Core\Inc\motor.h ..\DWT\dwt.h \
+  ..\Core\Inc\motor.h ..\DWT\dwt.h ..\Core\Inc\pid.h \
   D:\Software\Keil\ARM\ARMCLANG\Bin\..\include\stdio.h \
   ..\FireWater\ringbuff.h

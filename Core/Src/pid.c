@@ -22,6 +22,10 @@ void Cap(PID_parameter* PID_X,PID_parameter* PID_Y){
 		motor[1].pwm=PID_X->Output_max;
 		motor[3].pwm=PID_X->Output_max;
 	}
+	else if(PID_X->Output<-PID_X->Output_max){
+		motor[1].pwm=-PID_X->Output_max;
+		motor[3].pwm=-PID_X->Output_max;
+	}
 	else{
 		motor[1].pwm=PID_X->Output;
 		motor[3].pwm=PID_X->Output;
@@ -29,6 +33,10 @@ void Cap(PID_parameter* PID_X,PID_parameter* PID_Y){
 	if(PID_Y->Output>PID_Y->Output_max){
 		motor[0].pwm=PID_Y->Output_max;
 		motor[2].pwm=PID_Y->Output_max;
+	}
+	else if(PID_Y->Output<-PID_Y->Output_max){
+		motor[0].pwm=-PID_Y->Output_max;
+		motor[2].pwm=-PID_Y->Output_max;
 	}
 	else{
 		motor[0].pwm=PID_Y->Output;

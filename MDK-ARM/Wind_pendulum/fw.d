@@ -46,4 +46,5 @@ wind_pendulum/fw.o: ..\FireWater\fw.c \
   ..\Core\Inc\app_tle5012b.h ..\Core\Inc\spi.h \
   D:\Software\Keil\Packs\Freedom\VofaPlus\1.0.0\Vofa+\VOFA+\Vofa.h \
   D:\Software\Keil\ARM\ARMCLANG\Bin\..\include\stdbool.h \
-  ..\FireWater\fw.h ..\Core\Inc\motor.h ..\DWT\dwt.h
+  ..\FireWater\fw.h ..\Core\Inc\motor.h ..\DWT\dwt.h ..\Core\Inc\pid.h \
+  ..\Core\Inc\main.h

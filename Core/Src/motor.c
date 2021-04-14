@@ -29,7 +29,7 @@ void motor_ctl ( uint8_t which , uint8_t ph , uint16_t en)
 				}break;
 				case 3:
 				{
-						if(ph==1)
+						if(ph==0)
 						{
 								HAL_GPIO_WritePin(GPIOA, backPh_Pin, GPIO_PIN_RESET);
 								__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2,en);							
@@ -42,7 +42,7 @@ void motor_ctl ( uint8_t which , uint8_t ph , uint16_t en)
 				}break;
 				case 2:
 				{
-						if(ph==1)
+						if(ph==0)
 						{
 								HAL_GPIO_WritePin(GPIOA, leftPh_Pin, GPIO_PIN_RESET);
 								__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3,en);							

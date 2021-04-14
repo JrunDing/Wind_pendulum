@@ -38,6 +38,7 @@ extern "C" {
 #include "motor.h"
 #include "dwt.h"
 #include "math.h"
+#include "pid.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -50,6 +51,8 @@ typedef struct {
 typedef struct {
 	uint16_t X;
 	uint16_t Y;
+	uint16_t Mid_X;
+	uint16_t Mid_Y;
 }Angle;
 typedef struct {
 	float AX;

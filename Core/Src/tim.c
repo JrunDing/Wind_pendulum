@@ -25,10 +25,12 @@
 #include "gpio.h"
 #include "app_tle5012b.h"
 #include "pid.h"
-#define IndexInc 5//根据固有频率来
+#define IndexInc 4//根据固有频率来
 #define WaveSize 10000
-#define K_amp 1.0
-#define K_ff 1.0
+#define K_amp 1.0//计算实际幅值的比例
+#define K_ff 0.0//前馈项比例
+
+
 extern Angle angle;//X和Y轴角度
 extern Vofa_HandleTypedef jSHandle;//JustFloat框架句柄
 extern PID_parameter PID1_X;//用于追踪轨迹
@@ -250,22 +252,24 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		{
 			angle.X=ReadAngle();
 			angle.Y=ReadAngle_Y();
+			//angle.Y-=angle.Mid_Y;
 			//Vofa_JustFloat(&jSHandle,angle,2);
 			if(command_data.mode==1||command_data.mode==3){//跟踪曲线,1为画直线,3为画圆
-				Position_Pid(&PID1_X,angle.X,sin_wave[pointer.p_x]*K_amp*amp.AX);
-				Position_Pid(&PID1_Y,angle.Y,sin_wave[pointer.p_y]*K_amp*amp.AY);
-				PID1_X.Output-=K_ff*K_amp*amp.AX*K_amp*amp.AX*sin_wave[pointer.p_x];//补上二阶前馈项,后期可以写成K_ff*amp.AX*amp.AX*sin_wave[pointer.p_x]以缩短运算时间
-				PID1_Y.Output-=K_ff*K_amp*amp.AY*K_amp*amp.AY*sin_wave[pointer.p_y];
+				Position_Pid(&PID1_X,angle.X,sin_wave[pointer.p_x]*K_amp*amp.AX+angle.Mid_X);
+				Position_Pid(&PID1_Y,angle.Y,sin_wave[pointer.p_y]*K_amp*amp.AY+angle.Mid_Y);
+				PID1_X.Output-=K_ff*amp.AX*sin_wave[pointer.p_x];//补上二阶前馈项,后期可以写成K_ff*amp.AX*amp.AX*sin_wave[pointer.p_x]以缩短运算时间
+				PID1_Y.Output-=K_ff*amp.AY*sin_wave[pointer.p_y];
 				pointer.p_x=(pointer.p_x+IndexInc)%WaveSize;
 				pointer.p_y=(pointer.p_y+IndexInc)%WaveSize;
 				Cap(&PID1_X,&PID1_Y);
 				AntiWindup(&PID1_X);
 				AntiWindup(&PID1_Y);
 				Execute();
+
 			}
 			else if(command_data.mode==2){//快速回到中点
-				Position_Pid(&PID2_X,angle.X,sin_wave[pointer.p_x]*K_amp);
-				Position_Pid(&PID2_Y,angle.Y,sin_wave[pointer.p_y]*K_amp);
+				Position_Pid(&PID2_X,angle.X,sin_wave[pointer.p_x]*K_amp+angle.Mid_X);
+				Position_Pid(&PID2_Y,angle.Y,sin_wave[pointer.p_y]*K_amp+angle.Mid_Y);
 				pointer.p_x=(pointer.p_x+IndexInc)%WaveSize;
 				pointer.p_y=(pointer.p_y+IndexInc)%WaveSize;
 				Cap(&PID2_X,&PID2_Y);

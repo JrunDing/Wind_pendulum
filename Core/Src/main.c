@@ -64,13 +64,18 @@ float sin_wave[WaveSize]={0,0.000628318489376257,0.00125663673070233,0.001884954
 X轴（从正到负）    65452——53856   
 Y轴（从正到负）		 56386——41790 
 *************************************/
-Angle angle[2];
+Angle angle;
+extern PID_parameter PID1_X;//用于追踪轨迹
+extern PID_parameter PID1_Y;
+extern PID_parameter PID2_X;//用于快速恢复中点
+extern PID_parameter PID2_Y;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 void PendulumInit(void);//初始化风力摆
+void PID_init(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -122,6 +127,12 @@ int main(void)
 	fw_init();//初始化FireWater，接收
 	Vofa_Init(&jSHandle,VOFA_MODE_SKIP);//初始化vofa，用JustFloat，发送
 	dwt_init();
+	command_data.mode=4;//初始化为停止
+	PID_init();
+	//PendulumInit();
+	angle.Mid_X= ReadAngle();
+	angle.Mid_Y=ReadAngle_Y();
+	HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,0);
 	HAL_TIM_Base_Start_IT(&htim3);//开启定时器中断1ms,定时器最后初始化,防止初始化其他外设失败
   /* USER CODE END 2 */
 
@@ -136,12 +147,31 @@ int main(void)
 //			angle[0]+=angle[1];
 //		}
 		b=dwt_getCycles();
+//		float ang[6];
+//		ang[0]=angle.X;
+//		ang[1]=angle.Y;
+//		ang[2]=motor[0].pwm;
+//		ang[3]=motor[1].pwm;
+//		ang[4]=motor[2].pwm;
+//		ang[5]=motor[3].pwm;
+//		Vofa_JustFloat(&jSHandle,ang,6);
 		//Vofa_Printf(&jSHandle,"%d\r\n",b-a);
 		//float c=(float)sin_wave[i];
 //		i+=5;
 //		if(i>=9999) i=0;
 //		Vofa_JustFloat(&jSHandle,&sin_wave[i],1);
-		fw_task();
+		//motor_ctl(4,1,2000);
+			float ang[8];
+			ang[0]=angle.X;
+			ang[1]=angle.Y;
+			ang[2]=sin_wave[pointer.p_x]*5000+50000;
+			ang[3]=sin_wave[pointer.p_y]*5000+50000;
+			ang[4]=motor[0].pwm;
+			ang[5]=motor[1].pwm;
+			ang[6]=amp.AX;
+			ang[7]=amp.AY;
+			Vofa_JustFloat(&jSHandle,ang,8);
+			fw_task();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -211,7 +241,48 @@ void SystemClock_Config(void)
   * @author Francolin
   */
 void PendulumInit(void){
+	int i=0;
+	while(i<=50){
+		if(ReadSpeed()<5&&ReadSpeed_Y()<5){
+			i++;
+			HAL_Delay(100);
+			float m = ReadSpeed();
+			Vofa_JustFloat(&jSHandle,&m,1);
+			HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+		}
+		else{
+			i=0;
+			HAL_Delay(100);
+			float m = ReadSpeed();
+			Vofa_JustFloat(&jSHandle,&m,1);
+			HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+		}
+	}
+}
+void PID_init(void){
+	PID1_X.Kp = 3;
+	PID1_X.Ki = 0;
+	PID1_X.Kd = 0;
+	PID1_X.Intergral_max = 2000;
+	PID1_X.Output_max=9999;
 	
+	PID1_Y.Kp = 3;
+	PID1_Y.Ki = 0;
+	PID1_Y.Kd = 0;
+	PID1_Y.Intergral_max = 2000;
+	PID1_Y.Output_max=9999;
+
+	PID2_X.Kp = 1;
+	PID2_X.Ki = 0;
+	PID2_X.Kd = 1.0;
+	PID2_X.Intergral_max = 2000;
+	PID2_X.Output_max=9999;
+	
+	PID2_Y.Kp = 1;
+	PID2_Y.Ki = 0;
+	PID2_Y.Kd = 1.0;
+	PID2_Y.Intergral_max = 2000;
+	PID2_Y.Output_max=9999;
 }
 /* USER CODE END 4 */
 
