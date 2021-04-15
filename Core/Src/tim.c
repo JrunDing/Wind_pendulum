@@ -256,7 +256,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			//angle.Y-=angle.Mid_Y;
 			//Vofa_JustFloat(&jSHandle,angle,2);
 			if(command_data.mode==1||command_data.mode==3){//跟踪曲线,1为画直线,3为画圆
-				if(amp.xlarger){
+				if(amp.xlarger){//平滑起步的幅值递增
 					if(amp.CAX<amp.AX){
 						amp.CAX+=1.0;
 					}
