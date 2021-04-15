@@ -67,6 +67,8 @@ void stop_cb(void *args,uint8_t len)
 	PID2_Y.Intergral=0;
 	PID2_Y.Last_bias=0;
 	PID2_Y.Last_last_bias=0;
+	amp.CAX=0;
+	amp.CAY=0;
 	//Vofa_Printf(&jSHandle,"received data len =%d,test1_callback,float[0]=%f\r\n",len,buf[0]);
 }
  /***********************************************
@@ -98,10 +100,22 @@ void line_cb(void *args,uint8_t len)
 	command_data.mode=1;
 	command_data.angle=(uint16_t)buf[0];
 	command_data.amp=(uint16_t)buf[1];
-	pointer.p_x=0;
-	pointer.p_y=0;//后续还可以根据实时位置动态调整开始跟踪点
+	//pointer.p_x=0;
+	//pointer.p_y=0;//后续还可以根据实时位置动态调整开始跟踪点
 	amp.AY=190*atan(command_data.amp*sin((float)command_data.angle/180.0*3.1415926)/92.0)*180.0/3.1415926;
 	amp.AX=190*atan(command_data.amp*cos((float)command_data.angle/180.0*3.1415926)/92.0)*180.0/3.1415926;
+		if(amp.CAX<amp.AX){
+		amp.xlarger=1;
+	}
+	else{
+		amp.xlarger=0;
+	}
+	if(amp.CAY<amp.AY){
+		amp.ylarger=1;
+	}
+	else{
+		amp.ylarger=0;
+	}
 	uint8_t i =command_data.angle/90;//判断象限
 	switch(i){
 		case 0:
@@ -126,10 +140,24 @@ void circle_cb(void *args,uint8_t len)
 	command_data.mode=3;
 	command_data.angle=(uint16_t)buf[0];
 	command_data.amp=(uint8_t)buf[1];
-	pointer.p_x=0;
-	pointer.p_y=WaveSize/4;//pi/2相位超前
+//	pointer.p_x=0;
+//	pointer.p_y=WaveSize/4;//pi/2相位超前
+	pointer.p_y=pointer.p_x+WaveSize/4;//pi/2相位超前
 	amp.AY=190*atan(command_data.amp/92.0)*180.0/3.1415926;
 	amp.AX=190*atan(command_data.amp/92.0)*180.0/3.1415926;
+	if(amp.CAX<amp.AX){
+		amp.xlarger=1;
+	}
+	else{
+		amp.xlarger=0;
+	}
+	if(amp.CAY<amp.AY){
+		amp.ylarger=1;
+	}
+	else{
+		amp.ylarger=0;
+	}
+	
 	//Vofa_Printf(&jSHandle,"received data len =%d,test4_callback,float[0]=%f,float[1]=%f,float[2]=%f,float[3]=%f\r\n",len,buf[0],buf[1],buf[2],buf[3]);
 }
 void to_mid_cb(void *args,uint8_t len)

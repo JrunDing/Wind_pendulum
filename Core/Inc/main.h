@@ -55,8 +55,12 @@ typedef struct {
 	uint16_t Mid_Y;
 }Angle;
 typedef struct {
-	float AX;
+	float AX;//目标跟踪正弦波幅值
 	float AY;
+	float CAX;//当前跟踪正弦波幅值,用作平滑起步
+	float CAY;
+	uint8_t xlarger;
+	uint8_t ylarger;
 }Amp;
 typedef struct{
 	uint16_t p_x;

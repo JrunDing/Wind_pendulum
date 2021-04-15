@@ -260,15 +260,15 @@ void PendulumInit(void){
 	}
 }
 void PID_init(void){
-	PID1_X.Kp = 15;
+	PID1_X.Kp = 30;
 	PID1_X.Ki = 0;
-	PID1_X.Kd = 800;
+	PID1_X.Kd = 900;
 	PID1_X.Intergral_max = 1000;
 	PID1_X.Output_max=9999;
 	
-	PID1_Y.Kp = 15;
+	PID1_Y.Kp = 30;
 	PID1_Y.Ki = 0;
-	PID1_Y.Kd = 800;
+	PID1_Y.Kd = 900;
 	PID1_Y.Intergral_max = 1000;
 	PID1_Y.Output_max=9999;
 

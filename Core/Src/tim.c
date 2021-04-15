@@ -256,10 +256,42 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			//angle.Y-=angle.Mid_Y;
 			//Vofa_JustFloat(&jSHandle,angle,2);
 			if(command_data.mode==1||command_data.mode==3){//跟踪曲线,1为画直线,3为画圆
-				Position_Pid(&PID1_X,angle.X,sin_wave[pointer.p_x]*K_amp*amp.AX+angle.Mid_X);
-				Position_Pid(&PID1_Y,angle.Y,sin_wave[pointer.p_y]*K_amp*amp.AY+angle.Mid_Y);
-				PID1_X.Output-=K_ff*amp.AX*sin_wave[pointer.p_x];//补上二阶前馈项,后期可以写成K_ff*amp.AX*amp.AX*sin_wave[pointer.p_x]以缩短运算时间
-				PID1_Y.Output-=K_ff*amp.AY*sin_wave[pointer.p_y];
+				if(amp.xlarger){
+					if(amp.CAX<amp.AX){
+						amp.CAX+=1.0;
+					}
+					else{
+						amp.CAX=amp.AX;
+					}
+				}
+				else{
+					if(amp.CAX>amp.AX){
+						amp.CAX-=1.0;
+					}
+					else{
+						amp.CAX=amp.AX;
+					}
+				}
+				if(amp.ylarger){
+					if(amp.CAY<amp.AY){
+						amp.CAY+=1.0;
+					}
+					else{
+						amp.CAY=amp.AY;
+					}
+				}
+				else{
+					if(amp.CAY>amp.AY){
+						amp.CAY-=1.0;
+					}
+					else{
+						amp.CAY=amp.AY;
+					}
+				}
+				Position_Pid(&PID1_X,angle.X,sin_wave[pointer.p_x]*K_amp*amp.CAX+angle.Mid_X);
+				Position_Pid(&PID1_Y,angle.Y,sin_wave[pointer.p_y]*K_amp*amp.CAY+angle.Mid_Y);
+				PID1_X.Output-=K_ff*amp.CAX*sin_wave[pointer.p_x];//补上二阶前馈项,后期可以写成K_ff*amp.AX*amp.AX*sin_wave[pointer.p_x]以缩短运算时间
+				PID1_Y.Output-=K_ff*amp.CAY*sin_wave[pointer.p_y];
 				pointer.p_x=(pointer.p_x+IndexInc)%WaveSize;
 				pointer.p_y=(pointer.p_y+IndexInc)%WaveSize;
 				Cap(&PID1_X,&PID1_Y);
