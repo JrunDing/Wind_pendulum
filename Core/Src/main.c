@@ -272,16 +272,16 @@ void PID_init(void){
 	PID1_Y.Intergral_max = 1000;
 	PID1_Y.Output_max=9999;
 
-	PID2_X.Kp = 1;
+	PID2_X.Kp = 3;
 	PID2_X.Ki = 0;
-	PID2_X.Kd = 1.0;
-	PID2_X.Intergral_max = 2000;
+	PID2_X.Kd = 2000;
+	PID2_X.Intergral_max = 1000;
 	PID2_X.Output_max=9999;
 	
-	PID2_Y.Kp = 1;
+	PID2_Y.Kp = 3;
 	PID2_Y.Ki = 0;
-	PID2_Y.Kd = 1.0;
-	PID2_Y.Intergral_max = 2000;
+	PID2_Y.Kd = 2000;
+	PID2_Y.Intergral_max = 1000;
 	PID2_Y.Output_max=9999;
 }
 /* USER CODE END 4 */
