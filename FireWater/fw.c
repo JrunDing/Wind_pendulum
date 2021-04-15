@@ -17,6 +17,8 @@ extern PID_parameter PID1_X;//用于追踪轨迹
 extern PID_parameter PID1_Y;
 extern PID_parameter PID2_X;//用于快速恢复中点
 extern PID_parameter PID2_Y;
+extern uint8_t stable;
+extern uint8_t flag;
 //以下变量是必要的
 //环形缓冲区
 RingBuff_t uart_ringbuff;		//定义一个fifo变量
@@ -49,7 +51,7 @@ void stop_cb(void *args,uint8_t len)
 	float buf[4];
 	memset(buf,0,sizeof(buf)/sizeof(char));
 	memcpy(buf,args,sizeof(buf)/sizeof(char));
-	HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+	//HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 	command_data.mode=4;
 	PID1_X.Bias_sum=0;
 	PID1_X.Intergral=0;
@@ -73,6 +75,11 @@ void stop_cb(void *args,uint8_t len)
 	amp.AY=0;
 	pointer.p_x=0;
 	pointer.p_y=0;
+		HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,1);
+	HAL_Delay(100);
+	HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,0);
+	stable=0;
+	flag=0;
 	//Vofa_Printf(&jSHandle,"received data len =%d,test1_callback,float[0]=%f\r\n",len,buf[0]);
 }
  /***********************************************
@@ -135,6 +142,11 @@ void line_cb(void *args,uint8_t len)
 			pointer.p_x=(pointer.p_y+WaveSize/2)%WaveSize;
 			break;
 	}
+	HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,1);
+	HAL_Delay(100);
+	HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,0);
+	stable=0;
+	flag=0;
 
 	//Vofa_Printf(&jSHandle,"received data len =%d,test3_callback,float[0]=%f,float[1]=%f,float[2]=%f\r\n",len,buf[0],buf[1],buf[2]);
 }
@@ -165,7 +177,11 @@ void circle_cb(void *args,uint8_t len)
 	else{
 		amp.ylarger=0;
 	}
-	
+	HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,1);
+	HAL_Delay(100);
+	HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,0);
+	stable=0;
+	flag=0;
 	//Vofa_Printf(&jSHandle,"received data len =%d,test4_callback,float[0]=%f,float[1]=%f,float[2]=%f,float[3]=%f\r\n",len,buf[0],buf[1],buf[2],buf[3]);
 }
 void to_mid_cb(void *args,uint8_t len)
@@ -180,6 +196,9 @@ void to_mid_cb(void *args,uint8_t len)
 	amp.AX=0;
 	amp.CAX=0;
 	amp.CAY=0;
+	HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,1);
+	HAL_Delay(100);
+	HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,0);
 	//Vofa_Printf(&jSHandle,"received data len =%d,xxx_callback,float[0]=%f,float[1]=%f,float[2]=%f,float[3]=%f\r\n",len,buf[0],buf[1],buf[2],buf[3]);
 }
 void cmd123_cb(void *args,uint8_t len)
