@@ -14,7 +14,7 @@ float Position_Pid(PID_parameter* PID,float Current,float Target)
     PID->Bias=PID->Sv-PID->Pv;
     PID->Bias_sum+=PID->Bias;
 		PID->Intergral=PID->Ki*PID->Bias_sum;
-    PID->Output=PID->Kp*PID->Bias+PID->Intergral+0.5*PID->Kd*(PID->Bias-PID->Last_bias)+0.5*PID->Kd*(PID->Last_bias-PID->Last_last_bias);//针对微分项有一阶低通滤波
+    PID->Output=PID->Kp*PID->Bias+PID->Intergral+PID->Kd*(PID->Bias-PID->Last_bias);//
 	  PID->Last_last_bias=PID->Last_bias;
     PID->Last_bias=PID->Bias;
     return PID->Output;

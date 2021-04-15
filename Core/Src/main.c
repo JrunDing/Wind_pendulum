@@ -164,12 +164,12 @@ int main(void)
 			float ang[8];
 			ang[0]=angle.X;
 			ang[1]=angle.Y;
-			ang[2]=sin_wave[pointer.p_x]*amp.AX+angle.Mid_X;
-			ang[3]=sin_wave[pointer.p_y]*amp.AY+angle.Mid_Y;
-			ang[4]=motor[0].pwm;
-			ang[5]=PID1_X.Intergral;
+			ang[2]=sin_wave[pointer.p_x]*amp.CAX+angle.Mid_X;
+			ang[3]=sin_wave[pointer.p_y]*amp.CAY+angle.Mid_Y;
+			ang[4]=angle.X-sin_wave[pointer.p_x]*amp.AX-angle.Mid_X;
+			ang[5]=angle.Y-sin_wave[pointer.p_y]*amp.AY-angle.Mid_Y;
 			ang[6]=amp.AX;
-			ang[7]=angle.X-sin_wave[pointer.p_x]*amp.AX-angle.Mid_X;
+			ang[7]=amp.AY;
 			Vofa_JustFloat(&jSHandle,ang,8);
 			fw_task();
     /* USER CODE END WHILE */
@@ -260,15 +260,15 @@ void PendulumInit(void){
 	}
 }
 void PID_init(void){
-	PID1_X.Kp = 30;
+	PID1_X.Kp = 17;
 	PID1_X.Ki = 0;
-	PID1_X.Kd = 900;
+	PID1_X.Kd = 1000;
 	PID1_X.Intergral_max = 1000;
 	PID1_X.Output_max=9999;
 	
-	PID1_Y.Kp = 30;
+	PID1_Y.Kp = 15;
 	PID1_Y.Ki = 0;
-	PID1_Y.Kd = 900;
+	PID1_Y.Kd = 2000;
 	PID1_Y.Intergral_max = 1000;
 	PID1_Y.Output_max=9999;
 

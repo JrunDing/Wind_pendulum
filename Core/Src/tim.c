@@ -28,7 +28,7 @@
 #define IndexInc 1//根据固有频率来
 #define WaveSize 1500
 #define K_amp 1.06//计算实际幅值的比例
-float K_ff=1;//前馈项比例
+float K_ff=0.08;//前馈项比例
 
 
 extern Angle angle;//X和Y轴角度
