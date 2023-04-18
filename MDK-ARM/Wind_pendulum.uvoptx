@@ -241,7 +241,7 @@
 
   <Group>
     <GroupName>Application/MDK-ARM</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -693,7 +693,7 @@
 
   <Group>
     <GroupName>FireWater</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -716,8 +716,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\FireWater\FW_LIB.lib</PathWithFileName>
-      <FilenameWithoutPath>FW_LIB.lib</FilenameWithoutPath>
+      <PathWithFileName>$TC_ROOT$\..\..\STM32CubeMX\Projects\STM32H750\wind_pendulum\FireWater\FW_LIB.lib</PathWithFileName>
+      <FilenameWithoutPath>..\..\STM32CubeMX\Projects\STM32H750\wind_pendulum\FireWater\FW_LIB.lib</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
